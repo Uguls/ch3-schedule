@@ -19,13 +19,12 @@ public class Schedule {
     private LocalDateTime create_time;
     private LocalDateTime update_time;
 
-    public Schedule(Long id, String todo, String author, String password) {
+    public Schedule(Long id, String todo, String author, LocalDateTime create_time, LocalDateTime update_time) {
         this.id = id;
         this.todo = todo;
         this.author = author;
-        this.password = password;
-        this.create_time = LocalDateTime.now();
-        this.update_time = null;
+        this.create_time = create_time;
+        this.update_time = update_time;
     }
 
     public Schedule(String todo, String author, String password) {
@@ -33,7 +32,6 @@ public class Schedule {
         this.author = author;
         this.password = password;
         this.create_time = LocalDateTime.now();
-        this.update_time = null;
+        this.update_time = LocalDateTime.now();
     }
-
 }

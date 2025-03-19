@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,4 +27,9 @@ public class ScheduleController {
         return new ResponseEntity<>(scheduleService.addSchedule(dto.getTodo(), dto.getAuthor(), dto.getPassword()), HttpStatus.CREATED);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ScheduleResponseDto> findScheduleById(@PathVariable Long id) {
+        ScheduleResponseDto scheduleById = scheduleService.findScheduleById(id);
+        return ResponseEntity.ok(scheduleById);
+    }
 }

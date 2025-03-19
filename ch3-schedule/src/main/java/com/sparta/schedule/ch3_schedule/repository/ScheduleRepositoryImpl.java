@@ -3,10 +3,13 @@ package com.sparta.schedule.ch3_schedule.repository;
 import com.sparta.schedule.ch3_schedule.dto.ScheduleResponseDto;
 import com.sparta.schedule.ch3_schedule.entity.Schedule;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -29,6 +32,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         parameters.put("author", schedule.getAuthor());
         parameters.put("password", schedule.getPassword());
         parameters.put("create_time", Timestamp.valueOf(schedule.getCreate_time()));
+        parameters.put("update_time", Timestamp.valueOf(schedule.getUpdate_time()));
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
@@ -37,7 +41,9 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 
     @Override
     public Optional<Schedule> findById(Long id) {
-        return Optional.empty();
+        List<Schedule> result = jdbcTemplate.query("select * from schedule where id = ?", scheduleRowMapperV2(), id);
+
+        return result.stream().findAny();
     }
 
     @Override
@@ -53,5 +59,20 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     @Override
     public int updateById(Long id, String password) {
         return 0;
+    }
+
+    private RowMapper<Schedule> scheduleRowMapperV2() {
+        return new RowMapper<Schedule>() {
+            @Override
+            public Schedule mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new Schedule(
+                        rs.getLong("id"),
+                        rs.getString("todo"),
+                        rs.getString("author"),
+                        rs.getTimestamp("create_time").toLocalDateTime(),
+                        rs.getTimestamp("update_time").toLocalDateTime()
+                );
+            }
+        };
     }
 }

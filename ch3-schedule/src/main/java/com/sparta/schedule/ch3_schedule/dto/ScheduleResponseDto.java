@@ -1,5 +1,7 @@
 package com.sparta.schedule.ch3_schedule.dto;
 
+import com.sparta.schedule.ch3_schedule.entity.Schedule;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -22,5 +24,13 @@ public class ScheduleResponseDto {
         this.todo = todo;
         this.author = author;
         this.create_time = create_time;
+    }
+
+    public ScheduleResponseDto(Schedule schedule) {
+        this.id = schedule.getId();
+        this.todo = schedule.getTodo();
+        this.author = schedule.getAuthor();
+        this.create_time = schedule.getCreate_time();
+        this.update_time = schedule.getUpdate_time();
     }
 }
