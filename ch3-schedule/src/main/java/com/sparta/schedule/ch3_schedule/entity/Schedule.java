@@ -27,4 +27,13 @@ public class Schedule {
         this.create_time = LocalDateTime.now();
         this.update_time = null;
     }
+
+    public Schedule(String todo, String author, String password) {
+        this.todo = todo;
+        this.author = author;
+        this.password = password;
+        this.create_time = LocalDateTime.now();
+        this.update_time = null;
+    }
+
 }
