@@ -61,7 +61,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 
     @Override
     public int updateById(Long id, String password, String todo) {
-        return jdbcTemplate.update("update schedule set todo = ? where id = ? AND password = ?", todo, id, password);
+        return jdbcTemplate.update("update schedule set todo = ? where id = ? AND password = ? AND update_time = NOW()", todo, id, password);
     }
 
     @Override
