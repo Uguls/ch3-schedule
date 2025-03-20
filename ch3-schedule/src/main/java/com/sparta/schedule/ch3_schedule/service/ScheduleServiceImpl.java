@@ -43,6 +43,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         return all;
     }
 
+    // TODO : 비밀번호 검증 따로 추출해서 비교하기
     @Transactional
     @Override
     public ScheduleResponseDto updateSchedule(String todo, Long id, String password) {
