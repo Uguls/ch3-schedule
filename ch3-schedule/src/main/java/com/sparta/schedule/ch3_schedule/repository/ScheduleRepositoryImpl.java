@@ -2,6 +2,8 @@ package com.sparta.schedule.ch3_schedule.repository;
 
 import com.sparta.schedule.ch3_schedule.dto.ScheduleResponseDto;
 import com.sparta.schedule.ch3_schedule.entity.Schedule;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -54,12 +56,22 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 
     @Override
     public int deleteById(Long id, String password) {
-        return 0;
+        return jdbcTemplate.update("delete from schedule where id = ? AND password = ?", id, password);
     }
 
     @Override
     public int updateById(Long id, String password, String todo) {
         return jdbcTemplate.update("update schedule set todo = ? where id = ? AND password = ?", todo, id, password);
+    }
+
+    @Override
+    public String findPasswordById(Long id) {
+        try {
+            String query = jdbcTemplate.queryForObject("select password from schedule where id = ?", String.class, id);
+            return query;
+        } catch (EmptyResultDataAccessException e) {
+            return "";
+        }
     }
 
     private RowMapper<Schedule> scheduleRowMapperV2() {

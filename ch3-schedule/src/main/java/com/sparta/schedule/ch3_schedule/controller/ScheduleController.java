@@ -46,7 +46,11 @@ public class ScheduleController {
         return ResponseEntity.ok(scheduleById);
     }
 
-
+    /**
+     * @param id 수정할 일정의 id
+     * @param dto 수정할 내용 및 비밀번호
+     * @return 변경된 할일 반환
+     */
     @PutMapping("/{id}")
     public ResponseEntity<ScheduleResponseDto> updateScheduleById(
             @PathVariable Long id,
@@ -55,4 +59,19 @@ public class ScheduleController {
         ScheduleResponseDto scheduleResponseDto = scheduleService.updateSchedule(dto.getTodo(), id, dto.getPassword());
         return ResponseEntity.ok(scheduleResponseDto);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletedScheduleById(
+            @PathVariable Long id,
+            @RequestBody ScheduleRequestDto dto
+    ) {
+        try {
+            scheduleService.deleteSchedule(id, dto.getPassword());
+            return ResponseEntity.ok("success");
+        } catch (Exception e) {
+            return new ResponseEntity<>("fail", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 }

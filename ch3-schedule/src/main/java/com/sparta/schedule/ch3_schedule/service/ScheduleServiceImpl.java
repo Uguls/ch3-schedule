@@ -43,13 +43,16 @@ public class ScheduleServiceImpl implements ScheduleService {
         return all;
     }
 
-    // TODO : 비밀번호 검증 따로 추출해서 비교하기
     @Transactional
     @Override
     public ScheduleResponseDto updateSchedule(String todo, Long id, String password) {
 
         if (todo == null || password == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The todo and password are required values.");
+        }
+
+        if (!passwordValid(id, password)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The password not correct.");
         }
 
         int updatedById = scheduleRepository.updateById(id, password, todo);
@@ -59,4 +62,33 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         return new ScheduleResponseDto(scheduleRepository.findById(id).get());
     }
+
+    @Transactional
+    @Override
+    public void deleteSchedule(Long id, String password) {
+        if (password == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The password is required values.");
+        }
+
+        if (!passwordValid(id, password)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The password not correct.");
+        }
+
+        int deleteById = scheduleRepository.deleteById(id, password);
+        if (deleteById == 0) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No data has been modified.");
+        }
+    }
+
+    private Boolean passwordValid(Long id,String password) {
+        String passwordById = scheduleRepository.findPasswordById(id);
+
+        if (password != passwordById) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
 }

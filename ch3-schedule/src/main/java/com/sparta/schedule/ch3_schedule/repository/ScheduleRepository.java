@@ -18,4 +18,6 @@ public interface ScheduleRepository {
     int deleteById(Long id, String password); // 삭제
 
     int updateById(Long id, String password, String todo); // 수정
+
+    String findPasswordById(Long id);
 }

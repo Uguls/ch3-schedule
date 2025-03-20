@@ -15,4 +15,5 @@ public interface ScheduleService {
 
     ScheduleResponseDto updateSchedule(String todo, Long id, String password);
 
+    void deleteSchedule(Long id, String password);
 }
