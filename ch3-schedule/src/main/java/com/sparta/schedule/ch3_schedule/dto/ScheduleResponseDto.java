@@ -33,4 +33,12 @@ public class ScheduleResponseDto {
         this.create_time = schedule.getCreate_time();
         this.update_time = schedule.getUpdate_time();
     }
+
+    public ScheduleResponseDto(Long id, String todo, String author, LocalDateTime create_time, LocalDateTime update_time) {
+        this.id = id;
+        this.todo = todo;
+        this.author = author;
+        this.create_time = create_time;
+        this.update_time = update_time;
+    }
 }

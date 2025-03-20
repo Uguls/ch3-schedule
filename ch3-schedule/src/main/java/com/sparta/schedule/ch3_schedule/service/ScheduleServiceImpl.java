@@ -6,8 +6,10 @@ import com.sparta.schedule.ch3_schedule.entity.Schedule;
 import com.sparta.schedule.ch3_schedule.repository.ScheduleRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,4 +37,25 @@ public class ScheduleServiceImpl implements ScheduleService {
         return new ScheduleResponseDto(optionalSchedule.get());
     }
 
+    @Override
+    public List<ScheduleResponseDto> findAll() {
+        List<ScheduleResponseDto> all = scheduleRepository.findAll();
+        return all;
+    }
+
+    @Transactional
+    @Override
+    public ScheduleResponseDto updateSchedule(String todo, Long id, String password) {
+
+        if (todo == null || password == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The todo and password are required values.");
+        }
+
+        int updatedById = scheduleRepository.updateById(id, password, todo);
+        if (updatedById == 0) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No data has been modified.");
+        }
+
+        return new ScheduleResponseDto(scheduleRepository.findById(id).get());
+    }
 }

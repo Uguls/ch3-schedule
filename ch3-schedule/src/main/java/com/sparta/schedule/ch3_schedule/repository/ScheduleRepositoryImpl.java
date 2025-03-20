@@ -5,6 +5,7 @@ import com.sparta.schedule.ch3_schedule.entity.Schedule;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -47,8 +48,8 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     }
 
     @Override
-    public List<Schedule> findAll() {
-        return List.of();
+    public List<ScheduleResponseDto> findAll() {
+        return jdbcTemplate.query("select * from schedule", scheduleRowMapperV1());
     }
 
     @Override
@@ -57,8 +58,8 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     }
 
     @Override
-    public int updateById(Long id, String password) {
-        return 0;
+    public int updateById(Long id, String password, String todo) {
+        return jdbcTemplate.update("update schedule set todo = ? where id = ? AND password = ?", todo, id, password);
     }
 
     private RowMapper<Schedule> scheduleRowMapperV2() {
@@ -75,4 +76,20 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
             }
         };
     }
+
+    private RowMapper<ScheduleResponseDto> scheduleRowMapperV1() {
+        return new RowMapper<ScheduleResponseDto>() {
+            @Override
+            public ScheduleResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new ScheduleResponseDto(
+                        rs.getLong("id"),
+                        rs.getString("todo"),
+                        rs.getString("author"),
+                        rs.getTimestamp("create_time").toLocalDateTime(),
+                        rs.getTimestamp("update_time").toLocalDateTime()
+                );
+            }
+        };
+    }
+
 }
