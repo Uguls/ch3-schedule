@@ -1,6 +1,5 @@
 package com.sparta.schedule.ch3_schedule.repository;
 
-import com.sparta.schedule.ch3_schedule.dto.ScheduleResponseDto;
 import com.sparta.schedule.ch3_schedule.entity.Schedule;
 import com.sparta.schedule.ch3_schedule.entity.User;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -91,8 +89,8 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
      * @return 데이터베이스에 저장된 모든 일정을 리스트형태로 반환
      */
     @Override
-    public List<Schedule> findAll() {
-        return jdbcTemplate.query("select * from schedule", scheduleRowMapper());
+    public List<Schedule> findAll(int page, int size) {
+        return jdbcTemplate.query("select * from schedule order by id desc limit ? offset ?", scheduleRowMapper(), size, page * size);
     }
 
     /**

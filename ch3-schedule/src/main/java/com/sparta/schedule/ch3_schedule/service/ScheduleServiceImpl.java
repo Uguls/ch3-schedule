@@ -51,8 +51,8 @@ public class ScheduleServiceImpl implements ScheduleService {
      * @return 모든 일정 반환
      */
     @Override
-    public List<ScheduleResponseDto> findAll() {
-        List<Schedule> scheduleList = scheduleRepository.findAll();
+    public List<ScheduleResponseDto> findAll(int page, int size) {
+        List<Schedule> scheduleList = scheduleRepository.findAll(page, size);
         List<ScheduleResponseDto> responseDtoList = new ArrayList<>();
 
         for (Schedule schedule : scheduleList) {

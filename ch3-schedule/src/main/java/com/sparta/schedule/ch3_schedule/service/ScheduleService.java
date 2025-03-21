@@ -10,7 +10,7 @@ public interface ScheduleService {
 
     ScheduleResponseDto findScheduleById(Long id);
 
-    List<ScheduleResponseDto> findAll();
+    List<ScheduleResponseDto> findAll(int page, int size);
 
     ScheduleResponseDto updateSchedule(String todo, Long id, String password);
 
