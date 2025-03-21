@@ -15,14 +15,14 @@ public class ScheduleResponseDto {
     private String author;
     private Long userId;
     private String email;
-    private LocalDateTime create_time;
-    private LocalDateTime update_time;
+    private LocalDateTime create_date;
+    private LocalDateTime update_date;
 
-    public ScheduleResponseDto(Long id, String todo, Long userId, LocalDateTime create_time) {
+    public ScheduleResponseDto(Long id, String todo, Long userId, LocalDateTime create_date) {
         this.id = id;
         this.todo = todo;
         this.userId = userId;
-        this.create_time = create_time;
+        this.create_date = create_date;
     }
 
     public ScheduleResponseDto(Schedule schedule) {
@@ -31,15 +31,15 @@ public class ScheduleResponseDto {
         this.author = schedule.getAuthor();
         this.userId = schedule.getUserId();
         this.email = schedule.getEmail();
-        this.create_time = schedule.getCreate_date();
-        this.update_time = schedule.getUpdate_date();
+        this.create_date = schedule.getCreate_date();
+        this.update_date = schedule.getUpdate_date();
     }
 
-    public ScheduleResponseDto(Long id, String todo, Long userId, LocalDateTime create_time, LocalDateTime update_time) {
+    public ScheduleResponseDto(Long id, String todo, Long userId, LocalDateTime create_date, LocalDateTime update_date) {
         this.id = id;
         this.todo = todo;
         this.userId = userId;
-        this.create_time = create_time;
-        this.update_time = update_time;
+        this.create_date = create_date;
+        this.update_date = update_date;
     }
 }

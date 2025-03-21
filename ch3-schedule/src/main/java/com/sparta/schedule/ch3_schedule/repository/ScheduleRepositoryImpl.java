@@ -34,7 +34,6 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         Long userId;
         Optional<User> byEmail = userRepository.findByEmail(user.getEmail());
 
-
         if (byEmail.isPresent()) {
             userId = byEmail.get().getId();
         } else {
@@ -114,7 +113,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
      */
     @Override
     public int updateById(Long id, String password, String todo) {
-        return jdbcTemplate.update("update schedule set todo = ? where id = ? AND password = ? AND update_time = NOW()", todo, id, password);
+        return jdbcTemplate.update("update schedule set todo = ?, update_date = NOW() where id = ? AND password = ?", todo, id, password);
     }
 
     /**
