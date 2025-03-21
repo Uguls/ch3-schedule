@@ -24,18 +24,19 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         this.userRepository = userRepository;
     }
 
+    /**
+     * @param schedule
+     * @param user
+     * @return
+     */
     @Override
     public Schedule save(Schedule schedule, User user) {
-        // TODO
-        // - user 테이블에서 email, author로 조회 후 있으면 id로 schedule에 저장
-        // - 기존 유저가 아닌경우 새로 만들기
         Long userId;
         Optional<User> byEmail = userRepository.findByEmail(user.getEmail());
 
         if (byEmail.isPresent()) {
             userId = byEmail.get().getId();
         } else {
-            // TODO 새로운 유저 저장
             SimpleJdbcInsert jdbcInsertUser = new SimpleJdbcInsert(jdbcTemplate);
             jdbcInsertUser.withTableName("user").usingGeneratedKeyColumns("id");
 
@@ -49,7 +50,6 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
             userId = userKey.longValue();
         }
 
-        // TODO schedule 테이블에 데이터 저장
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("schedule").usingGeneratedKeyColumns("id");
 
@@ -81,12 +81,14 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     @Override
     public Optional<Schedule> findById(Long id) {
         List<Schedule> result = jdbcTemplate.query("select * from schedule where id = ?", scheduleRowMapper(), id);
-
         return result.stream().findAny();
     }
 
+
     /**
-     * @return 데이터베이스에 저장된 모든 일정을 리스트형태로 반환
+     * @param page 현재 페이지
+     * @param size 몇개씩 보기
+     * @return size만큼의 게시글 목록을 반환
      */
     @Override
     public List<Schedule> findAll(int page, int size) {
@@ -102,6 +104,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     public int deleteById(Long id, String password) {
         return jdbcTemplate.update("delete from schedule where id = ? AND password = ?", id, password);
     }
+    
 
     /**
      * @param id 수정할 일정의 id

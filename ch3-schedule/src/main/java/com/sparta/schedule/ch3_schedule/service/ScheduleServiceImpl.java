@@ -1,7 +1,9 @@
 package com.sparta.schedule.ch3_schedule.service;
 
-import com.sparta.schedule.ch3_schedule.dto.ScheduleRequestDto;
+import com.sparta.schedule.ch3_schedule.dto.ScheduleCreateRequestDto;
+import com.sparta.schedule.ch3_schedule.dto.ScheduleDeleteRequestDto;
 import com.sparta.schedule.ch3_schedule.dto.ScheduleResponseDto;
+import com.sparta.schedule.ch3_schedule.dto.ScheduleUpdateRequestDto;
 import com.sparta.schedule.ch3_schedule.entity.Schedule;
 import com.sparta.schedule.ch3_schedule.entity.User;
 import com.sparta.schedule.ch3_schedule.repository.ScheduleRepository;
@@ -10,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +25,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public ScheduleResponseDto addSchedule(ScheduleRequestDto dto) {
+    public ScheduleResponseDto addSchedule(ScheduleCreateRequestDto dto) {
         User user = new User(dto.getAuthor(), dto.getEmail());
         Schedule schedule = new Schedule(dto.getTodo(), user.getAuthor(), dto.getPassword(), user.getEmail());
 
@@ -38,7 +39,7 @@ public class ScheduleServiceImpl implements ScheduleService {
      */
     @Override
     public ScheduleResponseDto findScheduleById(Long id) {
-        Optional<com.sparta.schedule.ch3_schedule.entity.Schedule> optionalSchedule = scheduleRepository.findById(id);
+        Optional<Schedule> optionalSchedule = scheduleRepository.findById(id);
 
         if (optionalSchedule.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "\"Does not exist id = \" + id");
@@ -64,25 +65,23 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     /**
-     * @param todo 수정할 일정 내용
      * @param id 수정할 일정의 id
-     * @param password 수정할 일정의 password
      * @exception ResponseStatusException password 또는 todo가 없을 경우, password가 일치하지 않을 경우, 오류로 인해 변경이 이루어지지 않을 경우 에러 발생
      * @return 수정된 일정 반환
      */
     @Transactional
     @Override
-    public ScheduleResponseDto updateSchedule(String todo, Long id, String password) {
+    public ScheduleResponseDto updateSchedule(Long id, ScheduleUpdateRequestDto dto) {
 
-        if (todo == null || password == null) {
+        if (dto.getTodo() == null || dto.getPassword() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The todo and password are required values.");
         }
 
-        if (!passwordValid(id, password)) {
+        if (!passwordValid(id, dto.getPassword())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The password not correct.");
         }
 
-        int updatedById = scheduleRepository.updateById(id, password, todo);
+        int updatedById = scheduleRepository.updateById(id, dto.getPassword(), dto.getTodo());
 
         if (updatedById == 0) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No data has been modified.");
@@ -92,21 +91,21 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     /**
-     * @param id 삭제할 일정의 id
-     * @param password 삭제할 일정의 password
+     * @param id  삭제할 일정의 id
+     * @param dto
      */
     @Transactional
     @Override
-    public void deleteSchedule(Long id, String password) {
-        if (password == null) {
+    public void deleteSchedule(Long id, ScheduleDeleteRequestDto dto) {
+        if (dto.getPassword() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The password is required values.");
         }
 
-        if (!passwordValid(id, password)) {
+        if (!passwordValid(id, dto.getPassword())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The password not correct.");
         }
 
-        int deleteById = scheduleRepository.deleteById(id, password);
+        int deleteById = scheduleRepository.deleteById(id, dto.getPassword());
         if (deleteById == 0) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No data has been modified.");
         }

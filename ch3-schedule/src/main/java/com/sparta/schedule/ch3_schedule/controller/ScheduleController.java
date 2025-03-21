@@ -1,7 +1,6 @@
 package com.sparta.schedule.ch3_schedule.controller;
 
-import com.sparta.schedule.ch3_schedule.dto.ScheduleRequestDto;
-import com.sparta.schedule.ch3_schedule.dto.ScheduleResponseDto;
+import com.sparta.schedule.ch3_schedule.dto.*;
 import com.sparta.schedule.ch3_schedule.service.ScheduleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +17,11 @@ public class ScheduleController {
     }
 
     /**
-     * @param dto 일정 정보를 담은 요청 객체 (todo, author, password)
+     * @param dto 일정 정보 및 작성자 정보를 담은 요청 객체 (todo, author, password, email)
      * @return 생성된 일정 정보를 포함한 ResponseEntity 객체 (201 Created)
      */
     @PostMapping("/")
-    public ResponseEntity<ScheduleResponseDto> createSchedule(@RequestBody ScheduleRequestDto dto) {
+    public ResponseEntity<ScheduleResponseDto> createSchedule(@RequestBody ScheduleCreateRequestDto dto) {
         return new ResponseEntity<>(scheduleService.addSchedule(dto), HttpStatus.CREATED);
     }
 
@@ -34,12 +33,11 @@ public class ScheduleController {
     @GetMapping("/")
     public ResponseEntity<List<ScheduleResponseDto>> findAllSchedule(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "30") int size) {
-
+            @RequestParam(defaultValue = "30") int size
+    ) {
         List<ScheduleResponseDto> schedules = scheduleService.findAll(page, size);
         return ResponseEntity.ok(schedules);
     }
-
 
     /**
      * @param id 조회할 일정의 ID
@@ -59,24 +57,22 @@ public class ScheduleController {
     @PutMapping("/{id}")
     public ResponseEntity<ScheduleResponseDto> updateScheduleById(
             @PathVariable Long id,
-            @RequestBody ScheduleRequestDto dto
+            @RequestBody ScheduleUpdateRequestDto dto
     ) {
-        ScheduleResponseDto scheduleResponseDto = scheduleService.updateSchedule(dto.getTodo(), id, dto.getPassword());
-        return ResponseEntity.ok(scheduleResponseDto);
+        return ResponseEntity.ok(scheduleService.updateSchedule(id, dto));
     }
 
     /**
      * @param id 삭제할 일정의 id
      * @param dto 삭제할 일정의 password
-     * @return
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletedScheduleById(
             @PathVariable Long id,
-            @RequestBody ScheduleRequestDto dto
+            @RequestBody ScheduleDeleteRequestDto dto
     ) {
         try {
-            scheduleService.deleteSchedule(id, dto.getPassword());
+            scheduleService.deleteSchedule(id, dto);
             return ResponseEntity.ok("success");
         } catch (Exception e) {
             return new ResponseEntity<>("fail", HttpStatus.BAD_REQUEST);
