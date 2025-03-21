@@ -3,12 +3,15 @@ package com.sparta.schedule.ch3_schedule.service;
 import com.sparta.schedule.ch3_schedule.dto.ScheduleRequestDto;
 import com.sparta.schedule.ch3_schedule.dto.ScheduleResponseDto;
 import com.sparta.schedule.ch3_schedule.entity.Schedule;
+import com.sparta.schedule.ch3_schedule.entity.User;
 import com.sparta.schedule.ch3_schedule.repository.ScheduleRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,14 +24,21 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public ScheduleResponseDto addSchedule(String todo, String author, String password) {
-        Schedule schedule = new Schedule(todo, author, password);
-        return scheduleRepository.save(schedule);
+    public ScheduleResponseDto addSchedule(ScheduleRequestDto dto) {
+        User user = new User(dto.getAuthor(), dto.getEmail());
+        Schedule schedule = new Schedule(dto.getTodo(), user.getAuthor(), dto.getPassword(), user.getEmail());
+
+        return new ScheduleResponseDto(scheduleRepository.save(schedule, user));
     }
 
+    /**
+     * @param id 조회할 일정의 id
+     * @exception ResponseStatusException 데이터베이스에 존재하지 않는 id일 경우 발생
+     * @return 조회한 일정 반환
+     */
     @Override
     public ScheduleResponseDto findScheduleById(Long id) {
-        Optional<Schedule> optionalSchedule = scheduleRepository.findById(id);
+        Optional<com.sparta.schedule.ch3_schedule.entity.Schedule> optionalSchedule = scheduleRepository.findById(id);
 
         if (optionalSchedule.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "\"Does not exist id = \" + id");
@@ -37,12 +47,29 @@ public class ScheduleServiceImpl implements ScheduleService {
         return new ScheduleResponseDto(optionalSchedule.get());
     }
 
+    /**
+     * @return 모든 일정 반환
+     */
     @Override
     public List<ScheduleResponseDto> findAll() {
-        List<ScheduleResponseDto> all = scheduleRepository.findAll();
-        return all;
+        List<Schedule> scheduleList = scheduleRepository.findAll();
+        List<ScheduleResponseDto> responseDtoList = new ArrayList<>();
+
+        for (Schedule schedule : scheduleList) {
+            ScheduleResponseDto dto = new ScheduleResponseDto(schedule);
+            responseDtoList.add(new ScheduleResponseDto(schedule));
+        }
+
+        return responseDtoList;
     }
 
+    /**
+     * @param todo 수정할 일정 내용
+     * @param id 수정할 일정의 id
+     * @param password 수정할 일정의 password
+     * @exception ResponseStatusException password 또는 todo가 없을 경우, password가 일치하지 않을 경우, 오류로 인해 변경이 이루어지지 않을 경우 에러 발생
+     * @return 수정된 일정 반환
+     */
     @Transactional
     @Override
     public ScheduleResponseDto updateSchedule(String todo, Long id, String password) {
@@ -63,6 +90,10 @@ public class ScheduleServiceImpl implements ScheduleService {
         return new ScheduleResponseDto(scheduleRepository.findById(id).get());
     }
 
+    /**
+     * @param id 삭제할 일정의 id
+     * @param password 삭제할 일정의 password
+     */
     @Transactional
     @Override
     public void deleteSchedule(Long id, String password) {
@@ -80,6 +111,11 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
     }
 
+    /**
+     * @param id 비밀번호를 입력한 일정의 id
+     * @param password 입력한 password
+     * @return 데이터베이스에 저장된 password와 입력한 password가 일치할 경우 true, 불일치시 false
+     */
     private Boolean passwordValid(Long id,String password) {
         String passwordById = scheduleRepository.findPasswordById(id);
 

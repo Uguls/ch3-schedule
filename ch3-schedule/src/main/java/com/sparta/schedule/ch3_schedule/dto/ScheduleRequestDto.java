@@ -9,12 +9,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ScheduleRequestDto {
 
-    private Long id;
-
     private String todo;
-
-    private String author;
-
     private String password;
+    private String author;
+    private String email;
 
 }

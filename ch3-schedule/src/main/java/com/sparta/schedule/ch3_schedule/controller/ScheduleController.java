@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -24,7 +23,7 @@ public class ScheduleController {
      */
     @PostMapping("/")
     public ResponseEntity<ScheduleResponseDto> createSchedule(@RequestBody ScheduleRequestDto dto) {
-        return new ResponseEntity<>(scheduleService.addSchedule(dto.getTodo(), dto.getAuthor(), dto.getPassword()), HttpStatus.CREATED);
+        return new ResponseEntity<>(scheduleService.addSchedule(dto), HttpStatus.CREATED);
     }
 
     /**
@@ -42,8 +41,8 @@ public class ScheduleController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<ScheduleResponseDto> findScheduleById(@PathVariable Long id) {
-        ScheduleResponseDto scheduleById = scheduleService.findScheduleById(id);
-        return ResponseEntity.ok(scheduleById);
+        ScheduleResponseDto scheduleResponseDtoById = scheduleService.findScheduleById(id);
+        return ResponseEntity.ok(scheduleResponseDtoById);
     }
 
     /**
@@ -60,6 +59,11 @@ public class ScheduleController {
         return ResponseEntity.ok(scheduleResponseDto);
     }
 
+    /**
+     * @param id 삭제할 일정의 id
+     * @param dto 삭제할 일정의 password
+     * @return
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletedScheduleById(
             @PathVariable Long id,

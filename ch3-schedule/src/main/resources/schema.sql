@@ -1,6 +1,6 @@
-CREATE TABLE schedule (
+CREATE TABLE scheduleResponseDto (
       id          INT AUTO_INCREMENT PRIMARY KEY,
-      todo        VARCHAR(255) NOT NULL,
+      scheduleResponseDto        VARCHAR(255) NOT NULL,
       author      VARCHAR(255) NOT NULL,
       password    VARCHAR(255) NOT NULL,
       create_time DATETIME NOT NULL,
