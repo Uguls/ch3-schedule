@@ -2,6 +2,7 @@ package com.sparta.schedule.ch3_schedule.controller;
 
 import com.sparta.schedule.ch3_schedule.dto.*;
 import com.sparta.schedule.ch3_schedule.service.ScheduleService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class ScheduleController {
      * @return 생성된 일정 정보를 포함한 ResponseEntity 객체 (201 Created)
      */
     @PostMapping("/")
-    public ResponseEntity<ScheduleAndUserResponseDto> createSchedule(@RequestBody ScheduleCreateRequestDto dto) {
+    public ResponseEntity<ScheduleAndUserResponseDto> createSchedule(@Valid @RequestBody ScheduleCreateRequestDto dto) {
         return new ResponseEntity<>(scheduleService.addSchedule(dto), HttpStatus.CREATED);
     }
 
@@ -57,7 +58,7 @@ public class ScheduleController {
     @PutMapping("/{id}")
     public ResponseEntity<ScheduleResponseDto> updateScheduleById(
             @PathVariable Long id,
-            @RequestBody ScheduleUpdateRequestDto dto
+            @Valid @RequestBody ScheduleUpdateRequestDto dto
     ) {
         return ResponseEntity.ok(scheduleService.updateSchedule(id, dto));
     }
