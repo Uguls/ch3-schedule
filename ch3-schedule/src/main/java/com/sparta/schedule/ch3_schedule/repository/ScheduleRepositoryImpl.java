@@ -1,5 +1,6 @@
 package com.sparta.schedule.ch3_schedule.repository;
 
+import com.sparta.schedule.ch3_schedule.dto.ScheduleAndUserResponseDto;
 import com.sparta.schedule.ch3_schedule.entity.Schedule;
 import com.sparta.schedule.ch3_schedule.entity.User;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -30,7 +31,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
      * @return
      */
     @Override
-    public Schedule save(Schedule schedule, User user) {
+    public ScheduleAndUserResponseDto save(Schedule schedule, User user) {
         Long userId;
         Optional<User> byEmail = userRepository.findByEmail(user.getEmail());
 
@@ -63,14 +64,14 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         // 자동생성된 값 즉 id
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
-        return new Schedule(
+        return new ScheduleAndUserResponseDto(
                 key.longValue(),
+                userId,
                 schedule.getTodo(),
                 user.getAuthor(),
-                userId,
                 user.getEmail(),
-                schedule.getCreate_date(),
-                schedule.getUpdate_date()
+                LocalDateTime.now(),
+                LocalDateTime.now()
         );
     }
 
@@ -79,9 +80,22 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
      * @return id를 사용하여 조회한 일정
      */
     @Override
-    public Optional<Schedule> findById(Long id) {
-        List<Schedule> result = jdbcTemplate.query("select * from schedule where id = ?", scheduleRowMapper(), id);
-        return result.stream().findAny();
+    public Optional<ScheduleAndUserResponseDto> findById(Long id) {
+        String sql = """
+        SELECT 
+            s.id AS schedule_id,
+            s.user_id,
+            s.todo,
+            s.create_date AS schedule_create_date,
+            s.update_date AS schedule_update_date,
+            u.author,
+            u.email
+        FROM schedule s
+        JOIN user u ON s.user_id = u.id
+        WHERE s.id = ?
+    """;
+
+        return jdbcTemplate.query(sql, scheduleRowMapper(), id).stream().findAny();
     }
 
 
@@ -91,8 +105,23 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
      * @return size만큼의 게시글 목록을 반환
      */
     @Override
-    public List<Schedule> findAll(int page, int size) {
-        return jdbcTemplate.query("select * from schedule order by id desc limit ? offset ?", scheduleRowMapper(), size, page * size);
+    public List<ScheduleAndUserResponseDto> findAll(int page, int size) {
+        String sql = """
+        SELECT 
+            s.id AS schedule_id,
+            s.user_id,
+            s.todo,
+            s.create_date AS schedule_create_date,
+            s.update_date AS schedule_update_date,
+            u.author,
+            u.email
+        FROM schedule s
+        JOIN user u ON s.user_id = u.id
+        ORDER BY s.id DESC
+        LIMIT ? OFFSET ?
+    """;
+
+        return jdbcTemplate.query(sql, scheduleRowMapper(), size, page * size);
     }
 
     /**
@@ -131,17 +160,18 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         }
     }
 
-    private RowMapper<Schedule> scheduleRowMapper() {
-        return new RowMapper<Schedule>() {
+    private RowMapper<ScheduleAndUserResponseDto> scheduleRowMapper() {
+        return new RowMapper<ScheduleAndUserResponseDto>() {
             @Override
-            public Schedule mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new Schedule(
-                        rs.getLong("id"),
+            public ScheduleAndUserResponseDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new ScheduleAndUserResponseDto(
+                        rs.getLong("schedule_id"),
+                        rs.getLong("user_id"),
                         rs.getString("todo"),
-                        rs.getString("password"),
-                        rs.getTimestamp("create_date").toLocalDateTime(),
-                        rs.getTimestamp("update_date").toLocalDateTime(),
-                        rs.getLong("user_id")
+                        rs.getString("author"),
+                        rs.getString("email"),
+                        rs.getTimestamp("schedule_create_date").toLocalDateTime(),
+                        rs.getTimestamp("schedule_update_date").toLocalDateTime()
                 );
             }
         };

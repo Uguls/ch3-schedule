@@ -11,35 +11,32 @@ import java.time.LocalDateTime;
 public class ScheduleResponseDto {
 
     private Long id;
+    private Long user_id;
     private String todo;
-    private String author;
-    private Long userId;
-    private String email;
     private LocalDateTime create_date;
     private LocalDateTime update_date;
 
-    public ScheduleResponseDto(Long id, String todo, Long userId, LocalDateTime create_date) {
+    public ScheduleResponseDto(Long id, Long user_id, String todo, LocalDateTime create_date, LocalDateTime update_date) {
         this.id = id;
+        this.user_id = user_id;
         this.todo = todo;
-        this.userId = userId;
         this.create_date = create_date;
+        this.update_date = update_date;
     }
 
     public ScheduleResponseDto(Schedule schedule) {
         this.id = schedule.getId();
         this.todo = schedule.getTodo();
-        this.author = schedule.getAuthor();
-        this.userId = schedule.getUserId();
-        this.email = schedule.getEmail();
+        this.user_id = schedule.getUserId();
         this.create_date = schedule.getCreate_date();
         this.update_date = schedule.getUpdate_date();
     }
-
-    public ScheduleResponseDto(Long id, String todo, Long userId, LocalDateTime create_date, LocalDateTime update_date) {
-        this.id = id;
-        this.todo = todo;
-        this.userId = userId;
-        this.create_date = create_date;
-        this.update_date = update_date;
+    
+    public ScheduleResponseDto(ScheduleAndUserResponseDto scheduleAndUserResponseDto) {
+        this.id = scheduleAndUserResponseDto.getSchedule_id();
+        this.todo = scheduleAndUserResponseDto.getTodo();
+        this.user_id = scheduleAndUserResponseDto.getUser_id();
+        this.create_date = scheduleAndUserResponseDto.getCreate_date();
+        this.update_date = scheduleAndUserResponseDto.getUpdate_date();
     }
 }

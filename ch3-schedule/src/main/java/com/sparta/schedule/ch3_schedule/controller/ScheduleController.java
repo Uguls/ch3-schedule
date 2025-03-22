@@ -21,7 +21,7 @@ public class ScheduleController {
      * @return 생성된 일정 정보를 포함한 ResponseEntity 객체 (201 Created)
      */
     @PostMapping("/")
-    public ResponseEntity<ScheduleResponseDto> createSchedule(@RequestBody ScheduleCreateRequestDto dto) {
+    public ResponseEntity<ScheduleAndUserResponseDto> createSchedule(@RequestBody ScheduleCreateRequestDto dto) {
         return new ResponseEntity<>(scheduleService.addSchedule(dto), HttpStatus.CREATED);
     }
 
@@ -31,11 +31,11 @@ public class ScheduleController {
      * @return 일정 목록 (페이징 처리됨)
      */
     @GetMapping("/")
-    public ResponseEntity<List<ScheduleResponseDto>> findAllSchedule(
+    public ResponseEntity<List<ScheduleAndUserResponseDto>> findAllSchedule(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "30") int size
     ) {
-        List<ScheduleResponseDto> schedules = scheduleService.findAll(page, size);
+        List<ScheduleAndUserResponseDto> schedules = scheduleService.findAll(page, size);
         return ResponseEntity.ok(schedules);
     }
 
@@ -44,8 +44,8 @@ public class ScheduleController {
      * @return 해당 ID의 일정 정보를 담은 객체를 반환
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ScheduleResponseDto> findScheduleById(@PathVariable Long id) {
-        ScheduleResponseDto scheduleResponseDtoById = scheduleService.findScheduleById(id);
+    public ResponseEntity<ScheduleAndUserResponseDto> findScheduleById(@PathVariable Long id) {
+        ScheduleAndUserResponseDto scheduleResponseDtoById = scheduleService.findScheduleById(id);
         return ResponseEntity.ok(scheduleResponseDtoById);
     }
 

@@ -12,19 +12,21 @@ public class User {
     private Long id;
     private String author;
     private String email;
-    private LocalDateTime create_date;
-    private LocalDateTime update_date;
+    private LocalDateTime createDate;
+    private LocalDateTime updateDate;
 
-    public User(Long id, String author, String email, LocalDateTime create_date, LocalDateTime update_date) {
+    public User(Long id, String author, String email, LocalDateTime createDate, LocalDateTime updateDate) {
         this.id = id;
         this.author = author;
         this.email = email;
-        this.create_date = LocalDateTime.now();
-        this.update_date = LocalDateTime.now();
+        this.createDate = createDate;
+        this.updateDate = updateDate;
     }
 
     public User(String author, String email) {
         this.author = author;
         this.email = email;
+        this.createDate = LocalDateTime.now();
+        this.updateDate = LocalDateTime.now();
     }
 }

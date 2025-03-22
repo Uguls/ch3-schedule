@@ -1,9 +1,6 @@
 package com.sparta.schedule.ch3_schedule.service;
 
-import com.sparta.schedule.ch3_schedule.dto.ScheduleCreateRequestDto;
-import com.sparta.schedule.ch3_schedule.dto.ScheduleDeleteRequestDto;
-import com.sparta.schedule.ch3_schedule.dto.ScheduleResponseDto;
-import com.sparta.schedule.ch3_schedule.dto.ScheduleUpdateRequestDto;
+import com.sparta.schedule.ch3_schedule.dto.*;
 import com.sparta.schedule.ch3_schedule.entity.Schedule;
 import com.sparta.schedule.ch3_schedule.entity.User;
 import com.sparta.schedule.ch3_schedule.repository.ScheduleRepository;
@@ -25,11 +22,11 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public ScheduleResponseDto addSchedule(ScheduleCreateRequestDto dto) {
+    public ScheduleAndUserResponseDto addSchedule(ScheduleCreateRequestDto dto) {
         User user = new User(dto.getAuthor(), dto.getEmail());
-        Schedule schedule = new Schedule(dto.getTodo(), user.getAuthor(), dto.getPassword(), user.getEmail());
+        Schedule schedule = new Schedule(dto.getTodo(), dto.getPassword());
 
-        return new ScheduleResponseDto(scheduleRepository.save(schedule, user));
+        return scheduleRepository.save(schedule, user);
     }
 
     /**
@@ -38,30 +35,22 @@ public class ScheduleServiceImpl implements ScheduleService {
      * @return 조회한 일정 반환
      */
     @Override
-    public ScheduleResponseDto findScheduleById(Long id) {
-        Optional<Schedule> optionalSchedule = scheduleRepository.findById(id);
+    public ScheduleAndUserResponseDto findScheduleById(Long id) {
+        Optional<ScheduleAndUserResponseDto> optionalSchedule = scheduleRepository.findById(id);
 
         if (optionalSchedule.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "\"Does not exist id = \" + id");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id);
         }
 
-        return new ScheduleResponseDto(optionalSchedule.get());
+        return optionalSchedule.get();
     }
 
     /**
      * @return 모든 일정 반환
      */
     @Override
-    public List<ScheduleResponseDto> findAll(int page, int size) {
-        List<Schedule> scheduleList = scheduleRepository.findAll(page, size);
-        List<ScheduleResponseDto> responseDtoList = new ArrayList<>();
-
-        for (Schedule schedule : scheduleList) {
-            ScheduleResponseDto dto = new ScheduleResponseDto(schedule);
-            responseDtoList.add(new ScheduleResponseDto(schedule));
-        }
-
-        return responseDtoList;
+    public List<ScheduleAndUserResponseDto> findAll(int page, int size) {
+        return scheduleRepository.findAll(page, size);
     }
 
     /**
