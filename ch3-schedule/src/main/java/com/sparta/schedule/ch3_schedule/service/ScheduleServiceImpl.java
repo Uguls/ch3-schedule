@@ -3,6 +3,8 @@ package com.sparta.schedule.ch3_schedule.service;
 import com.sparta.schedule.ch3_schedule.dto.*;
 import com.sparta.schedule.ch3_schedule.entity.Schedule;
 import com.sparta.schedule.ch3_schedule.entity.User;
+import com.sparta.schedule.ch3_schedule.exception.PasswordMismatchException;
+import com.sparta.schedule.ch3_schedule.exception.ScheduleNotFoundException;
 import com.sparta.schedule.ch3_schedule.repository.ScheduleRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -39,7 +41,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         Optional<ScheduleAndUserResponseDto> optionalSchedule = scheduleRepository.findById(id);
 
         if (optionalSchedule.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id);
+            throw new ScheduleNotFoundException(id);
         }
 
         return optionalSchedule.get();
@@ -61,19 +63,17 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Transactional
     @Override
     public ScheduleResponseDto updateSchedule(Long id, ScheduleUpdateRequestDto dto) {
-
-        if (dto.getTodo() == null || dto.getPassword() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The todo and password are required values.");
+        if (dto.getPassword() == null) {
+            throw new IllegalArgumentException("비밀번호는 필수 입력입니다.");
         }
-
         if (!passwordValid(id, dto.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The password not correct.");
+            throw new PasswordMismatchException();
         }
 
         int updatedById = scheduleRepository.updateById(id, dto.getPassword(), dto.getTodo());
 
         if (updatedById == 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No data has been modified.");
+            throw new ScheduleNotFoundException(id);
         }
 
         return new ScheduleResponseDto(scheduleRepository.findById(id).get());
