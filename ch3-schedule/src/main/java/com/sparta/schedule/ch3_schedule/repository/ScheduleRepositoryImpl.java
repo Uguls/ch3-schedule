@@ -94,7 +94,6 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         JOIN user u ON s.user_id = u.id
         WHERE s.id = ?
     """;
-
         return jdbcTemplate.query(sql, scheduleRowMapper(), id).stream().findAny();
     }
 
@@ -153,6 +152,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     @Override
     public String findPasswordById(Long id) {
         try {
+            // query문 실행 결과를 String으로 반환
             String query = jdbcTemplate.queryForObject("select password from schedule where id = ?", String.class, id);
             return query;
         } catch (EmptyResultDataAccessException e) {
