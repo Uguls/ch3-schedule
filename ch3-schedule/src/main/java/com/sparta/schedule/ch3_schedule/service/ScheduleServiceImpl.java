@@ -1,6 +1,5 @@
 package com.sparta.schedule.ch3_schedule.service;
 
-import com.sparta.schedule.ch3_schedule.dto.ScheduleRequestDto;
 import com.sparta.schedule.ch3_schedule.dto.ScheduleResponseDto;
 import com.sparta.schedule.ch3_schedule.entity.Schedule;
 import com.sparta.schedule.ch3_schedule.repository.ScheduleRepository;
@@ -82,13 +81,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     private Boolean passwordValid(Long id,String password) {
         String passwordById = scheduleRepository.findPasswordById(id);
-
-        if (password != passwordById) {
+        if (password.equals(passwordById)) {
             return false;
         } else {
             return true;
         }
-
     }
 
 }
