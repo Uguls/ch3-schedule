@@ -23,8 +23,6 @@ public class SwaggerConfig {
                 .description("스프링부트 + Swagger + OpenAPI 3.0 문서 예제")
                 .version("1.0.0")
                 .contact(new Contact()
-                        .name("박형우")
-                        .email("your-email@example.com")
-                        .url("https://github.com/yourname"));
+                        .name("박형우"));
     }
 }
