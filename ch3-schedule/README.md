@@ -55,11 +55,11 @@ com.sparta.schedule.ch3_schedule
 
 | No | Method | URL | Request Body | Response |
 |----|--------|-----|----------------|----------|
-| 1 | POST | `/` | { <br/>"todo": "string", <br/>"author": "string", <br/>"password": "string", <br/>"email": "string" <br/>} | `ScheduleAndUserResponseDto` |
-| 2 | GET | `/` | 없음 | `List<ScheduleAndUserResponseDto>` |
-| 3 | GET | `/{id}` | 없음 | `ScheduleAndUserResponseDto` |
-| 4 | PUT | `/{id}` | { <br/>"todo": "string", <br/>"password": "string" <br/>}` | `ScheduleResponseDto |
-| 5 | DELETE | `/{id}` | `{ "password": "string" }` | `"success"` 또는 에러 메시지 |
+| 1 | POST | `/schedules` | { <br/>"todo": "string", <br/>"author": "string", <br/>"password": "string", <br/>"email": "string" <br/>} | `ScheduleAndUserResponseDto` |
+| 2 | GET | `/schedules` | 없음 | `List<ScheduleAndUserResponseDto>` |
+| 3 | GET | `/schedules/{id}` | 없음 | `ScheduleAndUserResponseDto` |
+| 4 | PUT | `/schedules/{id}` | { <br/>"todo": "string", <br/>"password": "string" <br/>}` | `ScheduleResponseDto |
+| 5 | DELETE | `/schedules/{id}` | `{ "password": "string" }` | `"success"` 또는 에러 메시지 |
 
 ---
 
