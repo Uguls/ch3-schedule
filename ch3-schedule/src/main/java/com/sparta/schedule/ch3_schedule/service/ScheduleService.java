@@ -2,6 +2,8 @@ package com.sparta.schedule.ch3_schedule.service;
 
 import com.sparta.schedule.ch3_schedule.dto.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ScheduleService {
@@ -9,7 +11,7 @@ public interface ScheduleService {
 
     ScheduleAndUserResponseDto findScheduleById(Long id);
 
-    List<ScheduleAndUserResponseDto> findAll(int page, int size);
+    List<ScheduleAndUserResponseDto> findAll(int page, int size, LocalDate updateDate, String author);
 
     ScheduleResponseDto updateSchedule(Long id, ScheduleUpdateRequestDto dto);
 

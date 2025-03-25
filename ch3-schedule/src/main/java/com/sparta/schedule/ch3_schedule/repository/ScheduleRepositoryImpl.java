@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -93,6 +94,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         FROM schedule s
         JOIN user u ON s.user_id = u.id
         WHERE s.id = ?
+        ORDER BY s.update_date DESC;
     """;
         return jdbcTemplate.query(sql, scheduleRowMapper(), id).stream().findAny();
     }
@@ -104,7 +106,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
      * @return size만큼의 게시글 목록을 반환
      */
     @Override
-    public List<ScheduleAndUserResponseDto> findAll(int page, int size) {
+    public List<ScheduleAndUserResponseDto> findAll(int page, int size, LocalDate updateDate, String author) {
         String sql = """
         SELECT 
             s.id AS schedule_id,
@@ -116,11 +118,18 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
             u.email
         FROM schedule s
         JOIN user u ON s.user_id = u.id
-        ORDER BY s.id DESC
+        WHERE (? IS NULL OR DATE(s.update_date) = ?)
+          AND (? IS NULL OR u.author LIKE ?)
+        ORDER BY s.update_date DESC
         LIMIT ? OFFSET ?
     """;
-
-        return jdbcTemplate.query(sql, scheduleRowMapper(), size, page * size);
+    return jdbcTemplate.query(
+            sql,
+            scheduleRowMapper(),
+            updateDate, updateDate,
+            author, author,
+            size, page * size
+    );
     }
 
     /**

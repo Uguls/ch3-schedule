@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,8 +56,8 @@ public class ScheduleServiceImpl implements ScheduleService {
      * @return 모든 일정 반환
      */
     @Override
-    public List<ScheduleAndUserResponseDto> findAll(int page, int size) {
-        return scheduleRepository.findAll(page, size);
+    public List<ScheduleAndUserResponseDto> findAll(int page, int size, LocalDate updateDate, String author) {
+        return scheduleRepository.findAll(page, size, updateDate, author);
     }
 
     /**
@@ -69,6 +71,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         if (dto.getPassword() == null) {
             throw new IllegalArgumentException("비밀번호는 필수 입력입니다.");
         }
+
         if (!passwordValid(id, dto.getPassword())) {
             throw new PasswordMismatchException();
         }

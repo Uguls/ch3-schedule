@@ -5,6 +5,7 @@ import com.sparta.schedule.ch3_schedule.entity.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -16,8 +17,8 @@ public class ScheduleAndUserResponseDto {
     private String todo;
     private String author;
     private String email;
-    private LocalDateTime create_date;
-    private LocalDateTime update_date;
+    private LocalDate create_date;
+    private LocalDate update_date;
 
     public ScheduleAndUserResponseDto(Long schedule_id, Long user_id, String todo, String author, String email, LocalDateTime create_date, LocalDateTime update_date) {
         this.schedule_id = schedule_id;
@@ -25,8 +26,8 @@ public class ScheduleAndUserResponseDto {
         this.todo = todo;
         this.author = author;
         this.email = email;
-        this.create_date = create_date;
-        this.update_date = update_date;
+        this.create_date = create_date.toLocalDate();
+        this.update_date = update_date.toLocalDate();
     }
 
     public ScheduleAndUserResponseDto(Schedule schedule, User user) {
@@ -34,8 +35,8 @@ public class ScheduleAndUserResponseDto {
         this.todo = schedule.getTodo();
         this.author = user.getAuthor();
         this.email = user.getEmail();
-        this.create_date = schedule.getCreate_date();
-        this.update_date = schedule.getUpdate_date();
+        this.create_date = schedule.getCreate_date().toLocalDate();
+        this.update_date = schedule.getUpdate_date().toLocalDate();
     }
 
 }

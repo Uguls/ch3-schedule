@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -39,9 +41,11 @@ public class ScheduleController {
     @GetMapping("/")
     public ResponseEntity<List<ScheduleAndUserResponseDto>> findAllSchedule(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "30") int size
-    ) {
-        List<ScheduleAndUserResponseDto> schedules = scheduleService.findAll(page, size);
+            @RequestParam(defaultValue = "30") int size,
+            @RequestParam(required = false) LocalDate updateDate,
+            @RequestParam(required = false) String author
+            ) {
+        List<ScheduleAndUserResponseDto> schedules = scheduleService.findAll(page, size, updateDate, author);
         return ResponseEntity.ok(schedules);
     }
 
