@@ -77,23 +77,31 @@ com.sparta.schedule.ch3_schedule
 ## 🧾 데이터베이스 테이블 설계 (MySQL 기준)
 
 ```sql
-CREATE TABLE user (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    author VARCHAR(255),
-    email VARCHAR(255) UNIQUE,
-    create_date DATETIME,
-    update_date DATETIME
+create table user
+(
+    id          int auto_increment comment 'PK'
+        primary key,
+    author      varchar(255) null comment '글쓴이',
+    email       varchar(255) null comment '이메일',
+    create_date datetime     null comment '생성날짜',
+    update_date datetime     null comment '수정날짜'
 );
 
-CREATE TABLE schedule (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    todo VARCHAR(255),
-    password VARCHAR(255),
-    create_date DATETIME,
-    update_date DATETIME,
-    user_id BIGINT,
-    FOREIGN KEY (user_id) REFERENCES user(id)
+create table schedule
+(
+    id          int auto_increment comment 'PK'
+        primary key,
+    todo        varchar(255) null comment '할일',
+    create_date datetime     null comment '생성날짜',
+    update_date datetime     null comment '수정날짜',
+    password    varchar(255) null comment '비밀번호',
+    user_id     int          not null comment 'user테이블 id',
+    constraint fk_schedule_user
+        foreign key (user_id) references user (id)
+            on delete cascade
 );
+
+
 ```
 
 ---
