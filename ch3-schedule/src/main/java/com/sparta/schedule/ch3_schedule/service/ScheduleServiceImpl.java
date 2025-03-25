@@ -23,6 +23,10 @@ public class ScheduleServiceImpl implements ScheduleService {
         this.scheduleRepository = scheduleRepository;
     }
 
+    /**
+     * @param dto 등록할 일정, 유저 정보
+     * @return 등록된 일정 정보
+     */
     @Override
     public ScheduleAndUserResponseDto addSchedule(ScheduleCreateRequestDto dto) {
         User user = new User(dto.getAuthor(), dto.getEmail());
@@ -81,7 +85,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     /**
      * @param id  삭제할 일정의 id
-     * @param dto
+     * @param dto 삭제일 일정의 비밀번호
      */
     @Transactional
     @Override

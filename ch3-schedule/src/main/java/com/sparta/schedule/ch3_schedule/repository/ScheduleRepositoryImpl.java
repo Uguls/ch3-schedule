@@ -26,9 +26,9 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     }
 
     /**
-     * @param schedule
-     * @param user
-     * @return
+     * @param schedule 저장할 일정 정보
+     * @param user 일정과 관련된 사용자 정보
+     * @return 일정과 사용자 정보를 포함한 ScheduleAndUserResponseDto
      */
     @Override
     public ScheduleAndUserResponseDto save(Schedule schedule, User user) {

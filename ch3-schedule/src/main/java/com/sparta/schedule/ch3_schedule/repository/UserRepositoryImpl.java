@@ -18,6 +18,10 @@ public class UserRepositoryImpl implements UserRepository{
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    /**
+     * @param email 데이터를 가져올 이메일
+     * @return 가져온 데이터
+     */
     @Override
     public Optional<User> findByEmail(String email) {
         List<User> users = jdbcTemplate.query("select * from user where email = ?", userRowMapper(), email);

@@ -3,7 +3,6 @@ package com.sparta.schedule.ch3_schedule.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
 public class ScheduleUpdateRequestDto {
